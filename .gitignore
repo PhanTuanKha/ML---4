@@ -1,0 +1,5 @@
+echo output_models/ > .gitignore
+echo __pycache__/ >> .gitignore
+echo *.pkl >> .gitignore
+echo *.png >> .gitignore
+echo *.html >> .gitignore
