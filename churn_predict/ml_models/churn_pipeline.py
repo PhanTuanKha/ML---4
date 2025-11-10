@@ -32,6 +32,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 
 from sklearn import metrics
+from collections import Counter
+from sklearn.utils import resample
 
 # Optional explainability libs
 try:
@@ -46,10 +48,10 @@ except Exception as e:
     print("LIME not available:", e)
 
 # ---------- Config ----------
-DATA_PATH = "../dataset/Telco-Customer-Churn.csv"  # adjust if needed
+DATA_PATH = "dataset/Telco-Customer-Churn.csv"  # adjust if needed
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
-OUTPUT_DIR = "output_models"
+OUTPUT_DIR = "../output_models"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 # ----------------------------
 
@@ -97,6 +99,7 @@ def build_preprocessor(df):
     categorical_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
         ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
+
     ])
 
     preprocessor = ColumnTransformer(transformers=[
@@ -106,11 +109,34 @@ def build_preprocessor(df):
 
     return preprocessor, numeric_features, categorical_features
 
+def handle_imbalance(X_train, y_train):
+    """Under-sampling majority class"""
+    train_df = X_train.copy()
+    train_df['churn'] = y_train
+    majority = train_df[train_df.churn == 0]
+    minority = train_df[train_df.churn == 1]
+
+    print(f"Before resampling: {Counter(y_train)}")
+
+    majority_under = resample(majority,
+                              replace=False,
+                              n_samples=len(minority),
+                              random_state=RANDOM_STATE)
+    train_balanced = pd.concat([majority_under, minority])
+    train_balanced = train_balanced.sample(frac=1, random_state=RANDOM_STATE)
+
+    y_train_bal = train_balanced['churn']
+    X_train_bal = train_balanced.drop(columns=['churn'])
+    print(f"After under-sampling: {Counter(y_train_bal)}")
+    print("Resampled training set shape:", X_train_bal.shape)
+    return X_train_bal, y_train_bal
+
 def fit_and_evaluate_models(X_train, X_test, y_train, y_test, preprocessor):
-    # Define models
     models = {
-        'LogisticRegression': LogisticRegression(solver='liblinear', random_state=RANDOM_STATE),
-        'RandomForest': RandomForestClassifier(n_estimators=200, random_state=RANDOM_STATE, n_jobs=-1),
+        # Có trọng số tự cân bằng
+        'LogisticRegression': LogisticRegression(solver='liblinear', random_state=RANDOM_STATE, class_weight='balanced'),
+        'RandomForest': RandomForestClassifier(n_estimators=200, random_state=RANDOM_STATE, n_jobs=-1, class_weight='balanced'),
+        # Không có class_weight → dùng under-sampling
         'GradientBoosting': GradientBoostingClassifier(n_estimators=200, random_state=RANDOM_STATE)
     }
 
@@ -119,10 +145,18 @@ def fit_and_evaluate_models(X_train, X_test, y_train, y_test, preprocessor):
     for name, clf in models.items():
         print("\n" + "="*60)
         print("Training model:", name)
-        # Full pipeline
+
+        # Nếu là GradientBoosting → dùng tập cân bằng
+        if name == 'GradientBoosting':
+            X_train_bal, y_train_bal = handle_imbalance(X_train, y_train)
+            X_used, y_used = X_train_bal, y_train_bal
+        else:
+            X_used, y_used = X_train, y_train
+
         pipeline = Pipeline(steps=[('preprocessor', preprocessor),
                                    ('classifier', clf)])
-        pipeline.fit(X_train, y_train)
+        pipeline.fit(X_used, y_used)
+
         # Save model
         model_path = os.path.join(OUTPUT_DIR, f"{name}.pkl")
         with open(model_path, 'wb') as f:
@@ -324,7 +358,7 @@ def main():
                                                         test_size=TEST_SIZE,
                                                         random_state=RANDOM_STATE,
                                                         stratify=y)
-
+    print("Class distribution before training:", Counter(y_train))
     print("Train size:", X_train.shape, "Test size:", X_test.shape)
 
     # Fit models and evaluate
