@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -124,17 +124,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# URL để truy cập file (ví dụ: /static/images/logo.png)
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Cấu hình bổ sung cho file tĩnh
+# Đường dẫn thư mục mà Django sẽ tìm file static
+# (Sử dụng cú pháp / của pathlib, vì BASE_DIR là đối tượng Path)
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-# Thư mục sẽ chứa tất cả các file tĩnh khi chạy collectstatic
+# Thư mục sẽ chứa tất cả các file tĩnh khi deploy (chạy 'collectstatic')
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
