@@ -1,0 +1,237 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Observer</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ... (Toàn bộ CSS của bạn giữ nguyên) ... */
+        :root {
+            --primary-blue: #4A69FF;
+            --dark-text: #1A202C;
+            --light-text: #5A6372;
+            --background-light: #F7FAFC;
+            --white: #FFFFFF;
+            --border-color: #E2E8F0;
+            --footer-bg: #0F172A;
+            --error-red: #e53e3e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; line-height: 1.6; color: var(--dark-text); background-color: var(--background-light); }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+        .main-header { position: sticky; top: 0; left: 0; width: 100%; background-color: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); z-index: 1000; border-bottom: 1px solid var(--border-color); }
+        .main-nav { display: flex; justify-content: space-between; align-items: center; height: 80px; }
+        .logo { display: flex; align-items: center; text-decoration: none; }
+        .logo svg { width: 40px; height: 40px; color: var(--primary-blue); }
+        .logo span { margin-left: 10px; font-size: 20px; font-weight: 700; color: var(--dark-text); }
+        .user-menu { display: flex; align-items: center; gap: 20px; }
+        .btn-logout { cursor: pointer; background: none; border: 1px solid var(--error-red); color: var(--error-red); font-family: 'Be Vietnam Pro', sans-serif; text-decoration: none; padding: 8px 20px; border-radius: 8px; font-weight: 500; font-size: 15px; transition: all 0.3s ease; }
+        .btn-logout:hover { background-color: var(--error-red); color: var(--white); }
+        .dataset-main { padding-top: 40px; padding-bottom: 80px; }
+        .page-header { margin-bottom: 40px; }
+        .page-header h2 { font-size: 32px; margin-bottom: 8px; }
+        .page-header p { font-size: 18px; color: var(--light-text); }
+        .btn-back { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--light-text); font-weight: 600; padding: 8px 16px; border-radius: 8px; background-color: var(--white); border: 1px solid var(--border-color); margin-bottom: 25px; transition: all 0.2s ease; }
+        .btn-back:hover { background-color: var(--background-light); color: var(--primary-blue); border-color: var(--primary-blue); }
+        .content-grid { display: grid; grid-template-columns: 360px 1fr; gap: 30px; align-items: flex-start; }
+        .left-column, .right-column { display: flex; flex-direction: column; gap: 30px; }
+        .card { background-color: var(--white); border-radius: 12px; border: 1px solid var(--border-color); padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card h3 { font-size: 20px; font-weight: 700; color: var(--dark-text); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .param-form { display: flex; flex-direction: column; height: 100%; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; color: var(--light-text); font-weight: 600; margin-bottom: 8px; }
+        .form-group select { width: 100%; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; font-size: 15px; font-family: 'Be Vietnam Pro', sans-serif; transition: all 0.3s; cursor: pointer; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-color: var(--white); background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235A6372' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 1.2em; }
+        .form-group select:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(74, 105, 255, 0.2); }
+        .form-group select:invalid { color: #A0AEC0; }
+        .evaluate-button { width: 100%; padding: 14px; margin-top: 10px; background: var(--primary-blue); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .evaluate-button:hover { opacity: 0.9; transform: translateY(-2px); }
+        .placeholder-text { color: var(--light-text); text-align: center; padding: 40px 20px; font-style: italic;}
+        .visualization-card { min-height: 500px; display: flex; flex-direction: column; }
+        .data-result-scroll-container { max-height: 70vh; overflow-y: auto; overflow-x: auto; padding-right: 5px; }
+
+        /* --- CSS MỚI CHO BẢNG DỮ LIỆU --- */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            text-align: left;
+            white-space: nowrap; /* Giữ cho nội dung không bị vỡ dòng */
+        }
+        .data-table th {
+            background-color: var(--background-light);
+            font-weight: 600;
+            position: sticky; /* Giữ tiêu đề cố định khi cuộn */
+            top: 0;
+            z-index: 10;
+        }
+        .data-table tbody tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+        .data-table tbody tr:hover {
+            background-color: #F0F4FF;
+        }
+        /* --- KẾT THÚC CSS MỚI --- */
+
+        @media (max-width: 992px) { .content-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="container main-nav">
+            <a href="{% url 'core:welcome' %}" class="logo">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+                <span>DATA ANALYSIS</span>
+            </a>
+            <div class="user-menu">
+                <a href="{% url 'core:logout' %}" class="btn-logout">Log out</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="dataset-main">
+        <div class="container">
+            <div class="page-header">
+                <a href="{% url 'core:welcome' %}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Home</span>
+                </a>
+                <h2>Dataset</h2>
+                <p>Observe the structure and preview the data records from the database tables.</p>
+            </div>
+
+            <div class="content-grid">
+                <div class="left-column">
+                    <div class="card">
+                        <h3>Choose Dataset</h3>
+                        
+                        <form class="param-form" id="dataset-form">
+                            <div class="form-group">
+                                <label for="datasetSelect">Select Table View:</label>
+                                <select id="datasetSelect" name="dataset" required>
+                                    <option value="" disabled selected>Select a dataset view...</option>
+                                    <option value="gender">Customer by Gender</option>
+                                    <option value="churn">Customer by Churn</option>
+                                    <option value="contract">Customer by Contract</option>
+                                    <option value="internet_service">Customer by Internet service</option>
+                                    <option value="payment_method">Customer by Payment method</option>
+                                    <option value="phone_service">Customer by Phone service</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="evaluate-button" id="evaluate-btn">Examine the dataset</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="right-column">
+                    <div class="card visualization-card">
+                        <h3>Data Preview & Observation</h3>
+                        <div id="data-result" class="data-result-scroll-container">
+                            <p class="placeholder-text" id="placeholder-message">
+                                Please select a table view and click 'Examine the dataset' to load the data preview.
+                                <br><br>
+                                *Note: This area supports vertical scrolling for large datasets.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('dataset-form');
+        const select = document.getElementById('datasetSelect');
+        const resultContainer = document.getElementById('data-result');
+        const placeholder = document.getElementById('placeholder-message');
+        const button = document.getElementById('evaluate-btn');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Ngăn form tải lại trang
+            
+            const selectedDataset = select.value;
+            if (!selectedDataset) {
+                alert('Please select a dataset view first.');
+                return;
+            }
+            
+            // Hiển thị trạng thái đang tải
+            placeholder.innerHTML = 'Loading data, please wait... <i class="fas fa-spinner fa-spin"></i>';
+            resultContainer.innerHTML = ''; // Xóa bảng cũ
+            resultContainer.appendChild(placeholder);
+            button.disabled = true; // Vô hiệu hóa nút
+
+            // Gọi API bằng Fetch
+            fetch(`/api/get-dataset/?dataset=${selectedDataset}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        // Hiển thị lỗi từ backend
+                        resultContainer.innerHTML = `<p class="placeholder-text" style="color: var(--error-red);">${data.error}</p>`;
+                    } else if (data.rows && data.headers) {
+                        // Tạo bảng từ dữ liệu JSON
+                        resultContainer.innerHTML = buildHtmlTable(data.headers, data.rows);
+                    }
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    resultContainer.innerHTML = `<p class="placeholder-text" style="color: var(--error-red);">An error occurred while fetching data. Check the console.</p>`;
+                })
+                .finally(() => {
+                    button.disabled = false; // Kích hoạt lại nút
+                });
+        });
+
+        function buildHtmlTable(headers, rows) {
+            if (rows.length === 0) {
+                return '<p class="placeholder-text">No data found for this view.</p>';
+            }
+
+            let table = '<table class="data-table">';
+            
+            // 1. Tạo Tiêu đề bảng (thead)
+            table += '<thead><tr>';
+            headers.forEach(header => {
+                table += `<th>${header.replace(/_/g, ' ')}</th>`; // Tên cột đẹp hơn
+            });
+            table += '</tr></thead>';
+            
+            // 2. Tạo Nội dung bảng (tbody)
+            table += '<tbody>';
+            rows.forEach(row => {
+                table += '<tr>';
+                headers.forEach(header => {
+                    // Hiển thị 'null' hoặc 'undefined' thành chuỗi rỗng
+                    let cellData = row[header] === null || row[header] === undefined ? '-' : row[header];
+                    table += `<td>${cellData}</td>`;
+                });
+                table += '</tr>';
+            });
+            table += '</tbody>';
+            
+            table += '</table>';
+            return table;
+        }
+    });
+    </script>
+    
+</body>
+</html>

@@ -11,8 +11,3 @@ __pycache__/
 .vscode/
 Thumbs.db
 
-# Bỏ file mô hình, ảnh, HTML sinh ra
-output_models/
-*.pkl
-*.png
-*.html
