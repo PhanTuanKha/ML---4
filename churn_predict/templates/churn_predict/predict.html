@@ -147,7 +147,7 @@
             <div class="page-header">
                 <a href="{% url 'core:welcome' %}" class="btn-back"><i class="fas fa-arrow-left"></i><span>Back to Home</span></a>
                 <h2>Prediction (Model: Gradient Boosting)</h2>
-                <p>Nhập thông tin của khách hàng để dự đoán khả năng rời đi (sử dụng model tốt nhất).</p>
+                <p>Enter customer information to predict churn probability (using the best model).</p>
             </div>
 
             <form method="POST" action="{% url 'core:predict' %}">
@@ -280,9 +280,9 @@
 
                     <div class="card lime-card" id="lime-explanation-card" style="display: none;"> <h3>LIME Explanation (Local)</h3>
                         <p style="font-size: 14px; color: var(--light-text); margin-bottom: 20px; line-height: 1.7;">
-                            <strong>LIME (Local Interpretable Model-agnostic Explanations)</strong> giải thích lý do cho *dự đoán cụ thể này*.
-                            Các thanh màu cam (ví dụ: 'Contract_Month-to-month') đẩy dự đoán về phía 'Churn'.
-                            Các thanh màu xanh (ví dụ: 'tenure') đẩy dự đoán về phía 'No Churn'.
+                            <strong>LIME (Local Interpretable Model-agnostic Explanations)</strong> Explanation for this specific prediction:
+                                    The orange bars (e.g., 'Contract_Month-to-month') push the prediction toward 'Leave'.
+                                    The blue bars (e.g., 'tenure') push the prediction toward 'Stay'.
                         </p>
                         <div id="lime-result-container">
                             <p class="placeholder-text">Click 'Explain this Prediction' above to run LIME. (This may take 10-30 seconds)</p>

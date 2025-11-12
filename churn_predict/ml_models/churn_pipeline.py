@@ -52,7 +52,7 @@ _BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(_BASE_DIR, "..", "dataset", "Telco-Customer-Churn.csv")
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
-OUTPUT_DIR = "../output_models"
+OUTPUT_DIR = os.path.join(_BASE_DIR, "output_models")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 # ----------------------------
 

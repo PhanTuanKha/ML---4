@@ -33,6 +33,7 @@ except ImportError:
 # Đường dẫn tới các model đã lưu
 # (Code load model ML của bạn giữ nguyên)
 MODEL_DIR = os.path.join(settings.BASE_DIR, 'ml_models', 'output_models')
+# MODEL_DIR = os.path.join(settings.BASE_DIR, 'output_models')
 LR_MODEL_PATH = os.path.join(MODEL_DIR, 'LogisticRegression.pkl')
 RF_MODEL_PATH = os.path.join(MODEL_DIR, 'RandomForest.pkl')
 GB_MODEL_PATH = os.path.join(MODEL_DIR, 'GradientBoosting.pkl')
@@ -92,7 +93,7 @@ def explanation_view(request):
         'shap_image_url': shap_url,
         'lime_html_url': lime_url,
 
-        'explanation_title': 'Giải thích cho: Gradient Boosting (Model tốt nhất)',
+        'explanation_title': 'Explanation for: Gradient Boosting (Best Model)',
         'metrics': MODEL_METRICS['gradient_boosting'] 
     }
     return render(request, 'churn_predict/explanation.html', context)
@@ -164,10 +165,10 @@ def predict_view(request):
             prediction_proba_val = pipeline.predict_proba(input_df)[0][1]
 
             if prediction_val == 1:
-                context['prediction'] = "Khách hàng sẽ Churn"
+                context['prediction'] = "The customer will leave"
                 context['prediction_class'] = "churn-yes"
             else:
-                context['prediction'] = "Khách hàng sẽ ở lại"
+                context['prediction'] = "The customer will stay"
                 context['prediction_class'] = "churn-no"
                 
             context['probability'] = f"{prediction_proba_val:.2%}"

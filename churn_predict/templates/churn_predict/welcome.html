@@ -218,8 +218,7 @@
                 <div style="background-color: var(--white); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; margin-bottom: 60px;">
                     <h4>Upload New Dataset (.csv)</h4>
                     <p style="margin-bottom: 20px; font-size: 15px; color: var(--light-text);">
-                        Upload một file CSV mới (phải có cấu trúc cột giống hệt file Telco-Customer-Churn.csv).
-                        Hệ thống sẽ tự động ghi đè file cũ và kích hoạt quá trình huấn luyện lại.
+                        Upload a new CSV file to train and make predictions based on your dataset.
                     </p>
                     
                     <form action="{% url 'core:upload_retrain' %}" method="post" enctype="multipart/form-data" class="upload-form">
