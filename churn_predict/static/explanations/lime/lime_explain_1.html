@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_div1Y5FYYDRAIS6AD6"></div>
+        <div class="lime top_div" id="top_div6SZ3JFK7S8WIWZQ"></div>
         
         <script>
-        var top_div = d3.select('#top_div1Y5FYYDRAIS6AD6').classed('lime top_div', true);
+        var top_div = d3.select('#top_div6SZ3JFK7S8WIWZQ').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["No Churn", "Churn"], [0.05609297095573185, 0.9439070290442682]);
+            var pp = new lime.PredictProba(pp_svg, ["No Churn", "Churn"], [0.049947427185876636, 0.9500525728141234]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["No Churn", "Churn"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["num__TotalCharges=0", 0.21889364417599722], ["cat__Contract_Month-to-month <= 0.00", -0.21622411563896873], ["cat__MultipleLines_No=0", 0.08489265870459886], ["cat__InternetService_Fiber optic=1", 0.08019530938755264], ["num__tenure <= -0.78", 0.07886582982200434], ["0.00 < cat__OnlineSecurity_No <= 1.00", 0.07543652602042687], ["num__SeniorCitizen=0", -0.06289385908925087], ["0.00 < cat__PaymentMethod_Electronic check <= 1.00", 0.06152471335480398], ["num__MonthlyCharges=-1", 0.05347973887652176], ["cat__PaperlessBilling_No <= 0.00", 0.045898641012965466]], 1, exp_div);
+                exp.show([["0.00 < cat__Contract_Month-to-month <= 1.00", 0.2166209546286676], ["num__MonthlyCharges=1", 0.18219618757472206], ["cat__MultipleLines_No=0", 0.08475495379549831], ["cat__InternetService_Fiber optic=1", 0.08182315693132504], ["num__tenure <= -0.78", 0.0793342265552388], ["0.00 < cat__OnlineSecurity_No <= 1.00", 0.07547997212187757], ["num__SeniorCitizen=0", -0.0635819365105938], ["0.00 < cat__PaymentMethod_Electronic check <= 1.00", 0.06155692959218302], ["cat__PaperlessBilling_No <= 0.00", 0.046338675971166934], ["num__TotalCharges=0", 0.017488063890581607]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["num__TotalCharges=0", "True", 0.21889364417599722], ["cat__Contract_Month-to-month", "0.00", -0.21622411563896873], ["cat__MultipleLines_No=0", "True", 0.08489265870459886], ["cat__InternetService_Fiber optic=1", "True", 0.08019530938755264], ["num__tenure", "-0.82", 0.07886582982200434], ["cat__OnlineSecurity_No", "1.00", 0.07543652602042687], ["num__SeniorCitizen=0", "True", -0.06289385908925087], ["cat__PaymentMethod_Electronic check", "1.00", 0.06152471335480398], ["num__MonthlyCharges=-1", "True", 0.05347973887652176], ["cat__PaperlessBilling_No", "0.00", 0.045898641012965466]], 1, raw_div);
+            exp.show_raw_tabular([["cat__Contract_Month-to-month", "1.00", 0.2166209546286676], ["num__MonthlyCharges=1", "True", 0.18219618757472206], ["cat__MultipleLines_No=0", "True", 0.08475495379549831], ["cat__InternetService_Fiber optic=1", "True", 0.08182315693132504], ["num__tenure", "-0.82", 0.0793342265552388], ["cat__OnlineSecurity_No", "1.00", 0.07547997212187757], ["num__SeniorCitizen=0", "True", -0.0635819365105938], ["cat__PaymentMethod_Electronic check", "1.00", 0.06155692959218302], ["cat__PaperlessBilling_No", "0.00", 0.046338675971166934], ["num__TotalCharges=0", "True", 0.017488063890581607]], 1, raw_div);
         
         </script>
         </body></html>

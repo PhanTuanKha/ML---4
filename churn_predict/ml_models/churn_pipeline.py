@@ -194,8 +194,6 @@ def fit_and_evaluate_models(X_train, X_test, y_train, y_test, preprocessor):
         print(f"Precision: {prec:.4f}")
         print(f"Recall: {rec:.4f}")
         print(f"F1-score: {f1:.4f}")
-        print("Confusion Matrix:")
-        print(metrics.confusion_matrix(y_test, y_pred))
         print("Classification Report:")
         print(metrics.classification_report(y_test, y_pred, zero_division=0))
 
