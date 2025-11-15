@@ -3,22 +3,22 @@ from django.templatetags.static import static
 import pickle
 import os
 import pandas as pd
-from django.shortcuts import render, redirect # --- SỬA ĐỔI --- (Thêm 'redirect')
+from django.shortcuts import render, redirect 
 from django.conf import settings
-import numpy as np # <-- MỚI
+import numpy as np 
 import json
-import sys # <-- MỚI
-import subprocess # <-- MỚI
-from django.contrib import messages # <-- MỚI
-from django.core.files.storage import default_storage # <-- MỚI
+import sys 
+import subprocess 
+from django.contrib import messages 
+from django.core.files.storage import default_storage 
 import time
 from django.templatetags.static import static
 
-# --- MỚI: Thêm các thư viện cho logic Auth ---
+# Thêm các thư viện cho logic Auth 
 from django.http import JsonResponse
 import json
-from django.views.decorators.csrf import csrf_exempt # Sẽ dùng cho API
-from .models import User # Import Model 'User' chúng ta đã tạo
+from django.views.decorators.csrf import csrf_exempt # Dùng cho API
+from .models import User # Import Model 'User' đã tạo
 from .models import (
     User, Contracts, Customers, InternetServices, 
     PaymentMethods, PhoneServices, ChurnRecords
@@ -29,9 +29,7 @@ except ImportError:
     LimeTabularExplainer = None
     print("Lỗi: Thư viện LIME chưa được cài đặt. Chạy 'pip install lime'")
 
-# Create your views here.
 # Đường dẫn tới các model đã lưu
-# (Code load model ML của bạn giữ nguyên)
 MODEL_DIR = os.path.join(settings.BASE_DIR, 'ml_models', 'output_models')
 # MODEL_DIR = os.path.join(settings.BASE_DIR, 'output_models')
 LR_MODEL_PATH = os.path.join(MODEL_DIR, 'LogisticRegression.pkl')
@@ -39,7 +37,7 @@ RF_MODEL_PATH = os.path.join(MODEL_DIR, 'RandomForest.pkl')
 GB_MODEL_PATH = os.path.join(MODEL_DIR, 'GradientBoosting.pkl')
 
 
-# --- SỬA ĐỔI: Đổi tên 'home_view' thành 'index_view' ---
+# Đổi tên 'home_view' thành 'index_view' 
 # View này render file index.html (chứa form đăng nhập/đăng ký)
 def index_view(request):
     """
@@ -48,7 +46,7 @@ def index_view(request):
     context = {'page_title': 'Trang chủ'}
     return render(request, 'churn_predict/index.html', context)
 
-# --- SỬA ĐỔI: Cập nhật 'welcome_view' để kiểm tra đăng nhập ---
+# Cập nhật 'welcome_view' để kiểm tra đăng nhập 
 # View này là trang 'welcome.html', chỉ xem được SAU KHI đăng nhập
 def welcome_view(request):
     # Kiểm tra xem 'user_id' có trong session không
@@ -56,7 +54,7 @@ def welcome_view(request):
         # Nếu chưa đăng nhập, đá về trang chủ (trang đăng nhập)
         return redirect('index_view') 
 
-    # --- SỬA ĐỔI: Lấy tên đầy đủ (user_full_name) từ session ---
+    # Lấy tên đầy đủ (user_full_name) từ session 
     # Lấy tên, nếu không có thì dự phòng là chữ 'User'
     user_name = request.session.get('user_full_name', 'User') 
     
@@ -64,11 +62,10 @@ def welcome_view(request):
         'page_title': 'Chào mừng',
         'user_name': user_name # Truyền user_name vào template
     }
-    # --- KẾT THÚC SỬA ĐỔI ---
+
     return render(request, 'churn_predict/welcome.html', context)
 
 
-# --- CÁC VIEW ML CỦA BẠN GIỮ NGUYÊN ---
 
 def analysis_view(request):
     context = {'page_title': 'Phân tích dữ liệu'}
@@ -76,7 +73,6 @@ def analysis_view(request):
 
 def explanation_view(request):
 
-    # --- SỬA ĐỔI ---
     # 1. Tạo một chuỗi "cache buster" dựa trên thời gian hiện tại
     # (Để ép trình duyệt luôn tải file mới nhất)
     cache_buster = f"?v={int(time.time())}"
@@ -84,7 +80,6 @@ def explanation_view(request):
     # 2. Xây dựng đường dẫn URL đầy đủ trong view
     shap_url = static('explanations/shap/shap_summary_GradientBoosting.png') + cache_buster
     lime_url = static('explanations/lime/lime_explanation_GradientBoosting.html') + cache_buster
-    # --- KẾT THÚC SỬA ĐỔI ---
 
     context = {
         'page_title': 'Giải thích mô hình',
@@ -127,7 +122,7 @@ def predict_view(request):
         'prediction': None,
         'probability': None,
         'form_data': None,
-        'show_explain_button': False # MỚI: Mặc định ẩn nút Explain
+        'show_explain_button': False # Mặc định ẩn nút Explain
     }
 
     if request.method == 'POST':
@@ -174,7 +169,7 @@ def predict_view(request):
             context['probability'] = f"{prediction_proba_val:.2%}"
             context['form_data'] = data 
             
-            # MỚI: Lưu dữ liệu vào session và cho phép hiện nút
+            # Lưu dữ liệu vào session và cho phép hiện nút
             request.session['last_prediction_data'] = data
             context['show_explain_button'] = True
 
@@ -186,7 +181,7 @@ def predict_view(request):
     return render(request, 'churn_predict/predict.html', context)
 
 
-# --- MỚI: Thêm các View xử lý API Đăng ký, Đăng nhập, Đăng xuất ---
+# Thêm các View xử lý API Đăng ký, Đăng nhập, Đăng xuất 
 
 @csrf_exempt # Tắt kiểm tra CSRF cho view API này
 def register_view(request):
@@ -267,7 +262,6 @@ def logout_view(request):
     # Quay về trang chủ (trang đăng nhập)
     return redirect('core:index_view') # Sẽ đặt tên URL là 'index_view'
 
-# --- KẾT THÚC MÀN HÌNH MỚI ---
 @csrf_exempt # Tạm thời tắt CSRF, vì chúng ta chỉ đọc dữ liệu (GET)
 def get_dataset_view(request):
     dataset_key = request.GET.get('dataset', None) # Lấy giá trị từ dropdown
@@ -341,7 +335,7 @@ def forgot_password_verify_view(request):
     return JsonResponse({'success': False, 'error': 'Yêu cầu không hợp lệ.'})
 
 
-# --- MỚI: API CẬP NHẬT MẬT KHẨU MỚI ---
+# API CẬP NHẬT MẬT KHẨU MỚI 
 @csrf_exempt
 def set_new_password_view(request):
     if request.method == 'POST':
@@ -372,7 +366,7 @@ def set_new_password_view(request):
             return JsonResponse({'success': False, 'error': 'Có lỗi máy chủ.'})
             
     return JsonResponse({'success': False, 'error': 'Yêu cầu không hợp lệ.'})
-# --- HÀM HELPER MỚI: LẤY TỪ PIPELINE (Cần cho LIME) ---
+# HÀM HELPER MỚI: LẤY TỪ PIPELINE (Cần cho LIME) 
 def load_and_clean_for_lime(path):
     correct_path = os.path.join(settings.BASE_DIR.parent, 'dataset', 'Telco-Customer-Churn.csv')
 
@@ -392,7 +386,7 @@ def load_and_clean_for_lime(path):
         df.rename(columns={'Churn': 'churn'}, inplace=True)
         df['churn'] = df['churn'].map({'Yes': 1, 'No': 0})
     else:
-        # Nếu file upload không có cột Churn, không sao, LIME không cần 'y'
+        # Nếu file upload không có cột Churn, không sao vì LIME không cần 'y'
         pass
         
     if 'churn' in df.columns:
@@ -401,7 +395,7 @@ def load_and_clean_for_lime(path):
     else:
         return df, None # Trả về X (df) và y (None)
 
-# --- VIEW API MỚI: CHO NÚT "EXPLAIN" (LIME) ---
+# VIEW API MỚI: CHO NÚT "EXPLAIN" (LIME) 
 # do_an/churn_predict/core/views.py
 
 @csrf_exempt
@@ -457,7 +451,6 @@ def explain_lime_view(request):
             num_features=10
         )
 
-        # --- SỬA ĐỔI LỚN BẮT ĐẦU TỪ ĐÂY ---
 
         # 8. Lưu kết quả LIME ra file HTML tạm
         html_content = exp.as_html()
@@ -481,13 +474,12 @@ def explain_lime_view(request):
         file_url = static(f'explanations/lime/{filename}') + cache_buster
 
         return JsonResponse({'success': True, 'url': file_url})
-        # --- KẾT THÚC SỬA ĐỔI ---
 
     except Exception as e:
         print(f"Lỗi khi chạy LIME: {e}")
         return JsonResponse({'success': False, 'error': f'Lỗi server khi chạy LIME: {e}'})
     
-# --- VIEW API MỚI: CHO "UPLOAD & RETRAIN" ---
+# VIEW API MỚI: CHO "UPLOAD & RETRAIN" 
 def upload_retrain_view(request):
     if 'user_id' not in request.session:
         return redirect('core:index_view')

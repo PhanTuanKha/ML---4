@@ -52,7 +52,7 @@
             grid-template-areas:
                 "identity services contract"
                 "prediction prediction prediction"
-                "lime lime lime"; /* <-- HÀNG MỚI */
+                "lime lime lime"; /* HÀNG MỚI */
         }
         .card { background-color: var(--white); border-radius: 12px; border: 1px solid var(--border-color); padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: all 0.3s ease; }
         .card h3 { font-size: 18px; font-weight: 700; color: var(--dark-text); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-light-2); }
@@ -61,7 +61,7 @@
         .services-card { grid-area: services; }
         .contract-card { grid-area: contract; }
         .prediction-card { grid-area: prediction; }
-        .lime-card { grid-area: lime; } /* <-- CSS MỚI */
+        .lime-card { grid-area: lime; } 
         
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 14px; color: var(--light-text); font-weight: 600; margin-bottom: 6px; }
@@ -101,7 +101,7 @@
         .prediction-result-container .result-proba { font-size: 18px; font-weight: 600; color: var(--dark-text); }
         .prediction-result-container .result-proba span { font-weight: 400; color: var(--light-text); font-size: 14px; }
         
-        /* MỚI: CSS cho nút Explain và LIME iframe */
+        /* CSS cho nút Explain và LIME iframe */
         .btn-explain {
             background: none;
             border: 1px solid var(--primary-blue);
@@ -296,7 +296,7 @@
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- Logic cũ (giữ nguyên) ---
+
         const phoneServiceYes = document.getElementById('phoneServiceYes');
         const phoneServiceNo = document.getElementById('phoneServiceNo');
         const multipleLinesSelect = document.getElementById('multipleLines');
@@ -342,7 +342,7 @@
         handlePhoneServiceChange();
         handleInternetServiceChange();
         
-        // --- LOGIC MỚI: Cho nút LIME Explain ---
+        // logic Cho nút LIME Explain 
         const explainButton = document.getElementById('explain-lime-btn');
         const limeCard = document.getElementById('lime-explanation-card');
         const limeResultContainer = document.getElementById('lime-result-container');

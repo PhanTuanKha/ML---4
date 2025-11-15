@@ -3,7 +3,7 @@
 from django.urls import path
 from . import views
 
-app_name = 'core' # Giữ nguyên
+app_name = 'core' 
 
 # CHỈ CÓ MỘT DANH SÁCH DUY NHẤT
 urlpatterns = [
@@ -27,7 +27,7 @@ urlpatterns = [
     # Đường dẫn API Quên mật khẩu
     path('api/forgot-verify/', views.forgot_password_verify_view, name='api_forgot_verify'),
     path('api/set-password/', views.set_new_password_view, name='api_set_password'),
-    # Thêm 2 đường dẫn cho LIME và Upload
+    # đường dẫn cho LIME và Upload
     path('api/explain-lime/', views.explain_lime_view, name='api_explain_lime'),
     path('upload-retrain/', views.upload_retrain_view, name='upload_retrain'),
 ]

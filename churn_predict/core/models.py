@@ -2,9 +2,9 @@
 
 from django.db import models
 
-# Định nghĩa Model "User" trỏ đến bảng "user" có sẵn của bạn
+# Định nghĩa Model "User" trỏ đến bảng "user" có sẵn
 class User(models.Model):
-    # Cột ID (viết hoa) của bạn
+    # Cột ID (viết hoa)
     ID = models.AutoField(primary_key=True, db_column='ID') 
     
     # Các cột còn lại
