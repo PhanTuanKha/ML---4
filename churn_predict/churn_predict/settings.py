@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'churn_predict.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'churn_customer',      # Tên CSDL của bạn
+        'NAME': 'churn_customer',      # Tên CSDL 
         'USER': 'root',               # Username MySQL
         'PASSWORD': '@Obama123',      # Password MySQL
         'HOST': 'localhost',          # Hoặc '127.0.0.1'
